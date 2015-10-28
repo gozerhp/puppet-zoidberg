@@ -23,30 +23,33 @@
 #
 define zoidberg::instance (
   $ensure  = 'running',
+  $suffix = $name,
   $logfile = '',
+  $configfile = "/etc/zoidberg/${name}.conf",
+  $subscribe = [],
 ) {
 
   if ($logfile != '') {
-    $process = "zoidbergd -c $title --logfile $logfile"
+    $process_args = "-c $configfile --logfile $logfile"
+
+    file { $logfile:
+      ensure => present,
+      owner  => 'zoidberg',
+    }
   } else {
-    $process = "zoidbergd -c $title"
+    $process_args = "-c $configfile"
   }
 
-  $pid_finder = "ps ax | grep \"$process\"|grep -v grep|awk '{print \$1}'"
-
-  if (!defined(File[$title])) {
-    $subscribe = []
-  } else {
-    $subscribe = File[$title]
+  file { "/etc/init.d/zoidberg-${suffix}":
+    ensure  => present,
+    mode    => '0555',
+    content => template('zoidberg/zoidberg.init.erb'),
   }
 
-  service { $title:
-    provider => base,
+  $_subscribe = flatten([$subscribe, File["/etc/init.d/zoidberg-${suffix}"])
+
+  service { "zoidberg-$suffix":
     ensure => $ensure,
-    start => "$process &",
-    stop => "kill -TERM `$pid_finder`",
-    pattern => $process,
-    subscribe => $subscribe,
-    require => $subscribe,
+    subscribe => $_subscribe,
   }
 }
