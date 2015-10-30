@@ -20,6 +20,10 @@ class zoidberg (
   $install_from = 'pip',
 ) {
 
+  user { 'zoidberg':
+    ensure => present,
+  }
+
   case $install_from {
     'pip': {
       package { 'zoidberg':
