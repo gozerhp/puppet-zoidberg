@@ -46,7 +46,7 @@ define zoidberg::instance (
     content => template('zoidberg/zoidberg.init.erb'),
   }
 
-  $_subscribe = flatten([$subscribe, File["/etc/init.d/zoidberg-${suffix}"])
+  $_subscribe = flatten([$subscribe, File["/etc/init.d/zoidberg-${suffix}"]])
 
   service { "zoidberg-$suffix":
     ensure => $ensure,
