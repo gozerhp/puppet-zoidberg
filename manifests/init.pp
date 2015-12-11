@@ -18,6 +18,8 @@
 #
 class zoidberg (
   $install_from = 'pip',
+  $git_source = 'https://github.com/notnownikki/zoidberg.git',
+  $git_revision = 'master',
 ) {
 
   user { 'zoidberg':
@@ -39,8 +41,8 @@ class zoidberg (
       vcsrepo { $source_path:
         ensure   => latest,
         provider => 'git',
-        source   => 'https://github.com/notnownikki/zoidberg.git',
-        revision => 'master',
+        source   => $git_source,
+        revision => $git_revision,
       }
 
       exec { 'create-zoidberg-virtualenv':
