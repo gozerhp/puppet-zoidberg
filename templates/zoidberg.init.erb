@@ -12,10 +12,11 @@
 # Do NOT "set -e"
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
-PATH=/sbin:/usr/sbin:/bin:/usr/bin<% if @install_from == 'git' %>:<%= @virtualenv_path %>/bin<% end %>
+BASE_PATH=<% if @install_from == 'git' %><%= @virtualenv_path %>/bin<% else %>/usr/local/bin<% end %>
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:$BASE_PATH
 DESC="Zoidberg"
 NAME=zoidberg-<%= @suffix %>
-DAEMON=zoidbergd
+DAEMON="$BASE_PATH/zoidbergd"
 DAEMON_ARGS="<%= @process_args %>"
 SCRIPTNAME=/etc/init.d/$NAME
 USER=zoidberg
